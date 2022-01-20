@@ -1,0 +1,18 @@
+{% load static %}
+<section class="bg0">
+    <div class="container">
+        <div class="row m-rl--1">
+            <div class="col-md-12 p-rl-1 p-b-2 ">                                  
+                <div class="content">
+                    <div id="slide_wrap">
+                        <ul style="display: none;">
+                            {% for i in galeryLayanan%}
+                                <li data-img="{{i.photo.file_path.url}}">{{i.judul}}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>        
+        </div>
+    </div>
+</section>

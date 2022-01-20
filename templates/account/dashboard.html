@@ -1,0 +1,223 @@
+{% extends "account/base-dashboard.html" %}
+{% load static %}
+{% block content %}
+    <div id="main" role="main">
+        <div id="ribbon">
+            <span class="ribbon-button-alignment"> 
+                <span id="refresh" class="btn btn-ribbon" data-action="resetWidgets" data-title="refresh"  rel="tooltip" data-placement="bottom" data-original-title="<i class='text-warning fa fa-warning'></i> Warning! This will reset all your widget settings." data-html="true">
+                    <i class="fa fa-refresh"></i>
+                </span> 
+            </span>
+            <ol class="breadcrumb">   
+                <li>Selamat Datang, {{ user.username|default:'Guest'|title }} - [ {{namaOPD}} ] 
+            </ol>
+        </div>
+        <div id="content">
+            <div class="row">
+                <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+                    <h1 class="page-title txt-color-blueDark">
+                        {% for i in menu_aktif %}
+                            {% if i.icon != '' %}
+                                <i class="fa-fw fa fa-{{i.icon}}"></i> 
+                            {% else %}
+                                <i class="fa-fw fa fa-home"></i> 
+                            {% endif %}
+                                {{i.nama}}
+                        {% endfor %}
+                    </h1>
+                </div>
+            </div>
+            <section id="widget-grid" class="">
+                <div class="row">
+                    <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="jarviswidget" id="wid-id-0">
+                            <header>
+                                {% for i in menu_aktif %}
+                                    <span class="widget-icon"> 
+                                    {% if i.icon != '' %}
+                                        <i class="fa-fw fa fa-{{i.icon}}"></i> 
+                                    {% else %}
+                                        <i class="fa-fw fa fa-home"></i> 
+                                    {% endif %}
+                                    </span>
+                                    <h2>Hit Count</h2>
+                                {% endfor %}
+                            </header>
+                            <div>
+                                <div class="jarviswidget-editbox">
+                                    <input class="form-control" type="text">	
+                                </div>
+                                <div class="widget-body">
+                                    <canvas id="lineChartHit" height="120"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                    </div>
+                </div>
+            </section>
+            <section id="widget-grid" class="">
+                <div class="row">
+                    <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="jarviswidget" id="wid-id-0">
+                            <header>
+                                {% for i in menu_aktif %}
+                                    <span class="widget-icon"> 
+                                    {% if i.icon != '' %}
+                                        <i class="fa-fw fa fa-{{i.icon}}"></i> 
+                                    {% else %}
+                                        <i class="fa-fw fa fa-home"></i> 
+                                    {% endif %}
+                                    </span>
+                                    <h2>News Count</h2>
+                                {% endfor %}
+                            </header>
+                            <div>
+                                <div class="jarviswidget-editbox">
+                                    <input class="form-control" type="text">	
+                                </div>
+                                <div class="widget-body">
+                                    <canvas id="lineChartNews" height="120"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
+{% block jquery-doc-ready %}
+    var randomColorFactor = function() {
+        return Math.round(Math.random() * 255);
+    };
+    var randomColor = function(opacity) {
+        return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+    };
+    var bln = "{{mChartHit.bulan}}"
+    var hit = {{mChartHit.hit}}
+    var bln2 = bln.split(",");
+    console.log(bln2);
+    var LineConfig = {
+        type: 'line',
+        data: {
+            labels: bln2,
+            datasets: [{
+                label: "Hit Count",
+                data : hit,
+            }, 
+            ]
+        },
+        options: {
+            responsive: true,
+            tooltips: {
+                mode: 'label'
+            },
+            hover: {
+                mode: 'dataset'
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        show: true,
+                        labelString: 'Month'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        show: true,
+                        labelString: 'Value'
+                    },
+                    ticks: {
+                        suggestedMin: 0,
+                        suggestedMax: 10,
+                    }
+                }]
+            }
+        }
+    };
+    var bln = "{{mChartNews.bulan}}"
+    var berita = {{mChartNews.berita}}
+    var pengumuman = {{mChartNews.pengumuman}}
+    var artikel = {{mChartNews.artikel}}
+    var bln2 = bln.split(",");
+    var LineConfigNews = {
+        type: 'line',
+        data: {
+            labels: bln2,
+            datasets: [{
+                label: "Berita",                
+                data : berita,
+            }, 
+            {
+                label: "Pengumuman",
+                data: pengumuman,
+            }, 
+            {
+                label: "Artikel",
+                data: artikel,
+            }
+            ]
+        },
+        options: {
+            responsive: true,
+            tooltips: {
+                mode: 'label'
+            },
+            hover: {
+                mode: 'dataset'
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        show: true,
+                        labelString: 'Month'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        show: true,
+                        labelString: 'Value'
+                    },
+                    ticks: {
+                        suggestedMin: 0,
+                        suggestedMax: 10,
+                    }
+                }]
+            }
+        }
+    };
+    $.each(LineConfigNews.data.datasets, function(i, dataset) {
+        dataset.borderColor = 'rgba(0,0,0,0.15)';
+        dataset.backgroundColor = randomColor(0.5);
+        dataset.pointBorderColor = 'rgba(0,0,0,0.15)';
+        dataset.pointBackgroundColor = randomColor(0.5);
+        dataset.pointBorderWidth = 1;
+    });
+    $.each(LineConfig.data.datasets, function(i, dataset) {
+        dataset.borderColor = 'rgba(0,0,0,0.15)';
+        dataset.backgroundColor = randomColor(0.5);
+        dataset.pointBorderColor = 'rgba(0,0,0,0.15)';
+        dataset.pointBackgroundColor = randomColor(0.5);
+        dataset.pointBorderWidth = 1;
+    });
+    window.onload = function() {
+        window.myLine = new Chart(document.getElementById("lineChartHit"), LineConfig);
+        window.myLine2 = new Chart(document.getElementById("lineChartNews"), LineConfigNews);
+    }
+{% endblock %}
+{% block related-plugin %}   
+    <script src="{% static 'account/js/plugin/moment/moment.min.js' %}"></script>
+	<script src="{% static 'account/js/plugin/chartjs/chart.min.js' %}"></script>
+{% endblock %}

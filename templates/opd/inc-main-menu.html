@@ -1,0 +1,39 @@
+<ul class="main-menu">     
+    {% for n in menu %}    						
+        <li 
+        {% if n.nama|lower in activeMenuList %} 
+            class="main-menu-active 
+                {% if n.haveChild == 1 and not n.parent_id  %}
+                    carret
+                {% endif %}" 
+        {% else %}
+            class="{% if n.haveChild == 1 and not n.parent_id %} carret {% endif %}" 
+        {% endif %}>
+        {% if n.href is None %}
+            <a href="#" title="{{n.nama}}" >
+        {% elif n.href == '#' or n.href == '/' or n.href == '' %}
+            {% if '//www.' in n.href %}
+                <a target=_blank href="{{n.href}}" title="{{n.nama}}" >
+            {% else %}
+                <a href="{{n.href}}" title="{{n.nama}}" >
+            {% endif %}
+        {% else %}
+            {% if '//www.' in n.href %}
+                <a target=_blank href="{{n.href}}" title="{{n.nama}}" >
+            {% else %}
+                <a href="/{{n.href}}" title="{{n.nama}}" > 
+            {% endif %}
+        {% endif %}
+        {% if n.icon == '' or n.icon is None %}
+            {{n.nama}} {% if n.haveChild and n.parent_id %}  &nbsp;  <i class="zmdi zmdi-chevron-right"></i>{% endif %}</a>
+        {% else %}            
+            <i class="fa fa-lg fa-fw fa-{{n.icon}}"></i> {{n.nama}} {% if n.haveChild and n.parent_id %} &nbsp; <i class="zmdi zmdi-chevron-right"></i>{% endif %}</a>
+        {% endif %}
+        {% if n.haveChild == 1 %} <ul class="sub-menu"> {% else %} </li> {% endif %} 						
+        {% if n.haveChildEndTag > 0 %} 
+            {% if n.haveChildEndTag >= 3 %} </ul></li> {% endif %}
+            {% if n.haveChildEndTag >= 2 %} </ul></li> {% endif %}
+            {% if n.haveChildEndTag >= 1 %} </ul></li> {% endif %}        
+        {% endif %}
+    {% endfor %}	
+</ul>

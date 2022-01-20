@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en-us" {% block extra-page %}{% endblock %}> 
+	<head>		
+		<title>{% block title-page %}{% endblock %}</title>
+        {% include "account/inc-meta.html" %}
+		{% include "account/inc-link.html" %}
+        {% block custom-style %}{% endblock %}
+	</head>
+	<body class=""> 
+        {% block header %}{% endblock %}
+        {% block left-panel %}{% endblock %}
+		{% block content %}{% endblock %}
+        {% block footer %}{% endblock %}
+        {% block shortcut %}{% endblock %}
+		{% block scripts %}{% endblock %} 
+	</body>
+</html>

@@ -1,0 +1,245 @@
+{% load static %}
+{% load humanize %}
+	<script src="{% static 'opd/vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+	<script src="{% static 'opd/vendor/animsition/js/animsition.min.js' %}"></script>
+	<script src="{% static 'opd/vendor/bootstrap/js/popper.js' %}"></script>
+	<script src="{% static 'opd/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'opd/js/main.js' %}"></script>
+    <script src="{% static 'opd/js/fullclip.js' %}"></script> 
+    <script src="{% static 'opd/js/lc-micro-slider.js' %}"></script> 
+    <script type="text/javascript">
+        const timing = 5000; 
+        new lc_micro_slider('#slide_wrap', {
+            fixed_slide_type    : 'image',  
+            slide_fx            : 'zoom-out',
+            animation_time	    : 500, 
+            slideshow_time	    : timing,
+            nav_arrows          : true,  
+            slideshow_cmd       : false,
+            autoplay            : true,
+            pause_on_hover      : false,
+            addit_classes       : ['lcms_default_theme']    
+        });
+        let ken_burns_intval,
+            curr_comb = '';
+        document.getElementById('slide_wrap').addEventListener('lcms_slide_shown', (e) => {
+            const $subj = e.target,
+                slide_index = e.detail.slide_index;
+            if(ken_burns_intval) {
+                clearInterval(ken_burns_intval);    
+            }
+            ken_burns_intval = setInterval(() => {
+                ken_burns_fx($subj, slide_index);
+            }, timing);    
+            ken_burns_fx($subj, slide_index);
+        });
+        const ken_burns_fx = function($subj, slide_index) {
+                vert_opts     = ["top", "bottom"],
+                horiz_opts    = ["left", "right"];
+            if(document.getElementById('lcms_kenburns')) {
+                document.getElementById('lcms_kenburns').remove();        
+            }
+            const vert_rule  = vert_opts[Math.floor(Math.random() * vert_opts.length)], 
+                horiz_rule = horiz_opts[Math.floor(Math.random() * horiz_opts.length)];
+            if(curr_comb == vert_rule+horiz_rule) {
+                ken_burns_fx($subj, slide_index);      
+            }
+            let animation = {
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0
+            };
+            animation[ vert_rule ] = '-3%'; 
+            animation[ horiz_rule ] = '-3%';
+            document.querySelector('#slide_wrap .lcms_slide[data-index="'+ slide_index +'"] .lcms_bg').animate(
+                animation,
+                {
+                    duration: timing,
+                    iterations: 1,
+                    fill: 'forwards'
+                }
+            );       
+        };          
+    </script>
+<script>    
+    $( document ).ready(function() {  
+        {% if popup %}
+            console.log(localStorage.getItem('HasSeenPopup'));
+            if (localStorage.getItem('HasSeenPopup') == null) {
+                $(window).on('load', function() {
+                    $('#modal-video-01').modal('show');
+                });
+                localStorage.setItem('HasSeenPopup','True');
+            }           
+        {% endif %}
+        var image_ = [], category_ = [], title_ = [], admin_ = [], date_ = [], link_ = [], site_ = [];
+        {% if beritaTerbaruAll|slice:":3"|length > 0 %} 
+            image_ = [], category_ = [], title_ = [], admin_ = [], date_ = [], link_ = [], site_ = [];
+            {% for i in beritaTerbaruAll|slice:":3" %}        
+                {% if i.foto %}
+                    image_.push('/media/{{i.foto}}');
+                {% else %}
+                    image_.push("{% static 'opd/images/post-none.png' %}");
+                {% endif %}
+                category_.push('{{i.kategori__nama|title}}');
+                title_.push('{{i.judul|title }}')
+                admin_.push('{{i.admin__username|title}}');
+                {% if i.created_at|naturalday == 'hari ini' %}
+                    date_.push('{{i.created_at|naturaltime}}');
+                {% else %}
+                    date_.push('{{i.created_at|naturalday}}');
+                {% endif %}
+                link_.push('/berita/{{i.judul_seo}}');
+                site_.push('{{i.site__name|upper}}');    
+            {% endfor %}    
+            $('.fullBackground_beritaTerbaruAll').fullClipImg({
+                images : image_, category: category_, title: title_, admin: admin_, date: date_, link: link_, site: site_,        
+                transitionTime: 2000,
+                wait: 3000
+            });
+        {% endif %}
+        {% if beritaTerbaruLain|slice:":3"|length > 0 %}    
+            image_ = [], category_ = [], title_ = [], admin_ = [], date_ = [], link_ = [], site_ = [];
+            {% for i in beritaTerbaruLain|slice:":3" %}        
+                {% if i.foto %}
+                    image_.push('/media/{{i.foto}}');
+                {% else %}
+                    image_.push("{% static 'opd/images/post-none.png' %}");
+                {% endif %}
+                category_.push('{{i.kategori__nama|title}}');
+                title_.push('{{i.judul|title}}');
+                admin_.push('{{i.admin__username|title}}');
+                {% if i.created_at|naturalday == 'hari ini' %}
+                    date_.push('{{i.created_at|naturaltime}}');
+                {% else %}
+                    date_.push('{{i.created_at|naturalday}}');
+                {% endif %}
+                link_.push('/berita/{{i.judul_seo}}');
+                site_.push('{{i.site__name|upper}}');  
+            {% endfor %}    
+            $('.fullBackground_beritaTerbaruLain').fullClipImg({
+                images : image_, category: category_, title: title_, admin: admin_, date: date_, link: link_, site: site_,        
+                transitionTime: 2000,
+                wait: 3000
+            });
+        {% endif %}
+        {% if beritaTerpopulerAll|slice:":3"|length > 0 %} 
+            image_ = [], category_ = [], title_ = [], admin_ = [], date_ = [], link_ = [], site_ = [];
+            {% for i in beritaTerpopulerAll|slice:":3" %}        
+                {% if i.foto %}
+                    image_.push('/media/{{i.foto}}');
+                {% else %}
+                    image_.push("{% static 'opd/images/post-none.png' %}");
+                {% endif %}
+                category_.push('{{i.kategori__nama|title}}');
+                title_.push('{{i.judul|title}}');
+                admin_.push('{{i.admin__username|title}}');
+                {% if i.created_at|naturalday == 'hari ini' %}
+                    date_.push('{{i.created_at|naturaltime}}');
+                {% else %}
+                    date_.push('{{i.created_at|naturalday}}');
+                {% endif %}
+                link_.push('/berita/{{i.judul_seo}}');
+                site_.push('{{i.site__name|upper}}');    
+            {% endfor %}    
+            $('.fullBackground_beritaTerpopulerAll').fullClipImg({
+                images : image_, category: category_, title: title_, admin: admin_, date: date_, link: link_, site: site_,        
+                transitionTime: 2000,
+                wait: 3000
+            });
+        {% endif %}
+        {% if beritaTerpopulerLain|slice:":3"|length > 0 %}
+            image_ = [], category_ = [], title_ = [], admin_ = [], date_ = [], link_ = [], site_ = [];
+            {% for i in beritaTerpopulerLain|slice:":3" %}        
+                {% if i.foto %}
+                    image_.push('/media/{{i.foto}}');
+                {% else %}
+                    image_.push("{% static 'opd/images/post-none.png' %}");
+                {% endif %}
+                category_.push('{{i.kategori__nama|title}}');
+                title_.push('{{i.judul|title}}');
+                admin_.push('{{i.admin__username|title}}');
+                {% if i.created_at|naturalday == 'hari ini' %}
+                    date_.push('{{i.created_at|naturaltime}}');
+                {% else %}
+                    date_.push('{{i.created_at|naturalday}}');
+                {% endif %}
+                link_.push('/berita/{{i.judul_seo}}');
+                site_.push('{{i.site__name|upper}}');    
+            {% endfor %}    
+            $('.fullBackground_beritaTerpopulerLain').fullClipImg({
+                images : image_, category: category_, title: title_, admin: admin_, date: date_, link: link_, site: site_,        
+                transitionTime: 2000,
+                wait: 3000
+            });
+        {% endif %}
+        {% if pejabat %}
+            image_ = [], category_ = [], title_ = [], admin_ = [], date_ = [], link_ = [], site_ = [];
+            {% for i in pejabat %}        
+                image_.push('{{i.photo.file_path.url}}');        
+                title_.push('{{i.nama|title}}');
+                admin_.push('{{i.jabatan|title}}');
+                date_.push('');
+                link_.push('javascript:void(0)');
+                site_.push('');    
+            {% endfor %}  
+            $('.fullBackground_pejabat').fullClipImg({
+                images : image_, category: category_, title: title_, admin: admin_, date: date_, link: link_, site: site_,        
+                transitionTime: 2000,
+                wait: 3000
+            });        
+        {% endif %}
+        {% if news_img|slice:":3"|length > 0 %} 
+            image_ = [], category_ = [], title_ = [], admin_ = [], date_ = [], link_ = [], site_ = [];
+            {% for i in news_img|slice:":3" %}        
+                image_.push('/media/' + '{{i.photo__file_path}}');
+                category_.push('');
+                title_.push('');
+                admin_.push('');
+                date_.push('');
+                link_.push('');
+                site_.push('');    
+            {% endfor %}    
+            $('.fullBackground_detail').fullClipImg({
+                images : image_, category: category_, title: title_, admin: admin_, date: date_, link: link_, site: site_,        
+                transitionTime: 2000,
+                wait: 3000
+            });
+        {% endif %}
+        $('.isi-berita p').addClass("f1-s-11 cl6 p-b-25 text-justify");
+        $('.isi-berita ol').css(
+            {
+                'display': 'block',
+                'list-style-type': 'decimal',
+                'margin-top': '1em',
+                'margin-bottom': '1em',
+                'margin-left': '0',
+                'margin-right': '0',
+                'padding-left': '40px',
+            }
+        ); 
+        $('.isi-berita ul').css(
+            {
+                'display': 'block',
+                'list-style-type': 'disc',
+                'margin-top': '1em',
+                'margin-bottom': '1em',
+                'margin-left': '0',
+                'margin-right': '0',
+                'padding-left': '40px',
+            }
+        );
+        $('.isi-berita blockquote').css(
+            {
+                'display': 'block',
+                'margin-top': '1em',
+                'margin-bottom': '1em',
+                'margin-left': '40px',
+                'margin-right': '40px',
+            }
+        );
+        $('.isi-berita img').removeAttr("style");
+        $('.isi-berita img').addClass('img-fluid'); 
+    });
+</script>
